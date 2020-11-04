@@ -4,7 +4,7 @@ const UseKeydown = (code, callback) => {
   useEffect(() => {
     const spaceHandler = (ev) => {
       ev.preventDefault();
-      if (ev.code === "Space") {
+      if (ev.code === code) {
         callback();
       }
     };

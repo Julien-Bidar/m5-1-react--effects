@@ -38,7 +38,7 @@ const Game = () => {
     }
   };
 
-  UseKeydown("space", handleClickButton);
+  UseKeydown("Space", handleClickButton);
 
   const calculateCookiesPerTick = (object) => {
     const arrayOfValues = Object.values(object);
