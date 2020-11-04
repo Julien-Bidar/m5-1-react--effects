@@ -1,22 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-
+import Items from "./Items";
 import cookieSrc from "../cookie.svg";
+import { useState } from "react";
+import useInterval from "../hooks/use-interval.hook";
+import UseKeydown from "../hooks/useKeydown";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const items = [
-  { id: "cursor", name: "Cursor", cost: 10, value: 1 },
+  { id: "cursor", name: "Cursor", cost: 10, value: 1, firstName: true },
   { id: "grandma", name: "Grandma", cost: 100, value: 10 },
   { id: "farm", name: "Farm", cost: 1000, value: 80 },
 ];
 
 const Game = () => {
-  // TODO: Replace this with React state!
-  const numCookies = 100;
-  const purchasedItems = {
+  // done: Replace this with React state!
+  const [numCookies, setNumCookies] = useState(100);
+  const [purchasedItems, setPurchasedItems] = useState({
     cursor: 0,
     grandma: 0,
     farm: 0,
+  });
+
+  const title = `${numCookies} cookies - Cookie Clicker Workshop`;
+  const fallbackTitle = "Cookie Clicker Workshop";
+  useDocumentTitle(title, fallbackTitle);
+
+  const handleClickButton = () => {
+    setNumCookies(numCookies + 1);
+  };
+
+  UseKeydown("space", handleClickButton);
+
+  const calculateCookiesPerTick = (object) => {
+    const arrayOfValues = Object.values(object);
+    let cookiesProduced =
+      arrayOfValues[0] * 1 + arrayOfValues[1] * 10 + arrayOfValues[2] * 80;
+    return cookiesProduced;
+  };
+
+  useInterval(() => {
+    const numOfGeneratedCookies = calculateCookiesPerTick(purchasedItems);
+    // Add this number of cookies to the total
+    setNumCookies(numCookies + numOfGeneratedCookies);
+  }, 1000);
+
+  const handleClickItems = (id, cost) => {
+    if (numCookies < cost) {
+      window.alert("you can't afford that");
+      return;
+    } else {
+      setNumCookies(numCookies - cost);
+      setPurchasedItems({ ...purchasedItems, [id]: purchasedItems[id] + 1 });
+    }
   };
 
   return (
@@ -25,9 +62,10 @@ const Game = () => {
         <Indicator>
           <Total>{numCookies} cookies</Total>
           {/* TODO: Calcuate the cookies per second and show it here: */}
-          <strong>0</strong> cookies per second
+          <strong>{calculateCookiesPerTick(purchasedItems)}</strong> cookies per
+          second
         </Indicator>
-        <Button>
+        <Button onClick={handleClickButton}>
           <Cookie src={cookieSrc} />
         </Button>
       </GameArea>
@@ -35,6 +73,21 @@ const Game = () => {
       <ItemArea>
         <SectionTitle>Items:</SectionTitle>
         {/* TODO: Add <Item> instances here, 1 for each item type. */}
+        {items.map((item) => {
+          const { name, cost, value, id, firstName } = item;
+          return (
+            <Items
+              firstName={firstName}
+              id={id}
+              key={id}
+              name={name}
+              cost={cost}
+              value={value}
+              numOwned={purchasedItems[id]}
+              handleClick={handleClickItems}
+            />
+          );
+        })}
       </ItemArea>
       <HomeLink to="/">Return home</HomeLink>
     </Wrapper>
