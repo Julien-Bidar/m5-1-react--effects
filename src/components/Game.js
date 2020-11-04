@@ -10,6 +10,7 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const items = [
   { id: "cursor", name: "Cursor", cost: 10, value: 1, firstName: true },
+  { id: "clicker", name: "Clicker", cost: 60, value: 0 },
   { id: "grandma", name: "Grandma", cost: 100, value: 10 },
   { id: "farm", name: "Farm", cost: 1000, value: 80 },
 ];
@@ -21,6 +22,7 @@ const Game = () => {
     cursor: 0,
     grandma: 0,
     farm: 0,
+    clicker: 0,
   });
 
   const title = `${numCookies} cookies - Cookie Clicker Workshop`;
@@ -28,7 +30,12 @@ const Game = () => {
   useDocumentTitle(title, fallbackTitle);
 
   const handleClickButton = () => {
-    setNumCookies(numCookies + 1);
+    if (purchasedItems.clicker === 0) {
+      setNumCookies(numCookies + 1);
+    } else {
+      const mult = purchasedItems.clicker;
+      setNumCookies(numCookies + mult * 3);
+    }
   };
 
   UseKeydown("space", handleClickButton);

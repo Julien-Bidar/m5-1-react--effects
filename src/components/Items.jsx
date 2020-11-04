@@ -16,10 +16,17 @@ const Items = ({ name, cost, value, numOwned, handleClick, id, firstName }) => {
       <button ref={ref} value={name} onClick={() => handleClick(id, cost)}>
         {name}
       </button>
-      <p>
-        Cost: {cost} cookie(s). Produces {value} cookie(s) per second.{" "}
-        {numOwned}{" "}
-      </p>
+      {name !== "Clicker" && (
+        <p>
+          Cost: {cost} cookies. Produces {value} cookie(s) per second.{" "}
+          {numOwned}{" "}
+        </p>
+      )}
+      {name === "Clicker" && (
+        <p>
+          Cost: {cost} cookies. Produces 3 cookies per click. {numOwned}{" "}
+        </p>
+      )}
       <hr />
     </div>
   );
