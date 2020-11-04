@@ -60,6 +60,8 @@ const Game = () => {
     } else {
       setNumCookies(numCookies - cost);
       setPurchasedItems({ ...purchasedItems, [id]: purchasedItems[id] + 1 });
+      const it = items.find((item) => item.id === id);
+      it.cost = Math.round(cost + (25 / 100) * cost);
     }
   };
 
